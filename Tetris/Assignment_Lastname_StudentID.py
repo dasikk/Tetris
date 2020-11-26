@@ -52,13 +52,11 @@ class Block:
             self.x += 1
         else:
             self.x += -1
-
     pass
 
     def y_moves(self):
-        if (self.y + self.height) < BaseGame().board_height:
+        if (self.y + self.height) < 18:  # 18 is board height
             self.y += 1
-
     pass
 
 
@@ -82,7 +80,6 @@ class Game(BaseGame):
 
         current_block = self.get_new_block()
         next_block = self.get_new_block()
-
         # GameLoop
         while True:
             self.test_quit_game()
@@ -104,7 +101,7 @@ class Game(BaseGame):
                         if self.ready_for_right_rotation(current_block):
                             Block.right_rotation(current_block, self.block_list[current_block.name])
                     if event.key == pygame.K_p:
-                        pass
+                        self.pause_game()
                     if event.key == pygame.K_DOWN:
                         self.speed = self.speed + 5
                 if event.type == pygame.KEYUP:
@@ -132,6 +129,9 @@ class Game(BaseGame):
             pygame.display.update()
             self.set_game_speed(self.speed)
             self.clock.tick(self.speed)
+
+    def pause_game(self):
+        self.show_text('Pause')
 
     def ready_for_right_rotation(self, block):
         if (block.rotation - 1) >= 0:
