@@ -219,30 +219,20 @@ class Game(BaseGame):
     # Returns Number of complete lines removed
     def remove_complete_line(self):
         # TODO go over all lines and check if one can be removed
-        completed_lines = [0] * self.board_height
         lines_removed = 0
-        found_empty_line = 0
-        found_second_empty_line = 0
-        for y in range(self.board_height):
+        for y in range(self.board_height - 1, 1, -1):
             if self.check_line_complete(y):
-                completed_lines[y] = 1
-                for x in range(self.board_width):
-                    self.gameboard[y][x] = self.blank_color
-                lines_removed += 1
-        for y in range(self.board_height - 1, 1, -1):
-            if completed_lines[y] == 1:
-                found_empty_line = 1
-            if found_empty_line:
-                for h in range(y, 1, -1):
-                    for x in range(self.board_width):
-                        self.gameboard[y][x] = self.gameboard[y - 1][x]
-        for y in range(self.board_height - 1, 1, -1):
-            if completed_lines[y - 1] == 1:
-                found_second_empty_line = 1
-            if found_second_empty_line:
-                for h in range(y, 1, -1):
-                    for x in range(self.board_width):
-                        self.gameboard[y][x] = self.gameboard[y - 1][x]
+                if y > 0:
+                    if self.check_line_complete(y - 1):
+                        lines_removed += 2
+                        for h in range(y, 1, -1):
+                            for x in range(self.board_width):
+                                self.gameboard[h][x] = self.gameboard[h - 2][x]
+                    else:
+                        lines_removed += 1
+                        for h in range(y, 1, -1):
+                            for x in range(self.board_width):
+                                self.gameboard[h][x] = self.gameboard[h - 1][x]
         if lines_removed:
             self.calculate_new_score(lines_removed, self.level)
             self.calculate_new_level(self.score)
